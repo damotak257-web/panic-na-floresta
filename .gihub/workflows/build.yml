@@ -7,20 +7,29 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    container: ps2dev/ps2dev:latest
+    name: Compilar o jogo
+    runs-on: ubuntu-24.04
+    container:
+      image: ps2dev/ps2dev:latest
+      options: --user root
 
     steps:
-      - name: Baixar arquivos do projeto
+      - name: Baixar os arquivos do projeto
         uses: actions/checkout@v4
 
-      - name: Compilar o código
+      - name: Verificar arquivos e compilar
         run: |
+          ls -la
+          make --version
           make clean
           make
 
       - name: Salvar o arquivo pronto
         uses: actions/upload-artifact@v4
         with:
-          name: Jogo_Pronto
-          path: "*.elf"
+          name: Panico_na_Floresta
+          path: |
+            *.elf
+            *.irx
+            *.o
+          retention-days: 30
