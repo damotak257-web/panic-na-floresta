@@ -1,1 +1,27 @@
 
+name: Compilar Jogo PS2
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ps2dev/ps2dev:latest
+
+    steps:
+      - name: Baixar os arquivos do projeto
+        uses: actions/checkout@v4
+
+      - name: Compilar o código
+        run: |
+          make clean
+          make
+
+      - name: Salvar o arquivo final
+        uses: actions/upload-artifact@v4
+        with:
+          name: Jogo_Pronto
+          path: "*.elf"
