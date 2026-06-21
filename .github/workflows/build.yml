@@ -1,1 +1,32 @@
+name: Build PS2 Game
+
+on:
+  push:
+    branches: [ main, principal, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: h4570/tyra:latest
+
+    steps:
+      - name: Obter arquivos do projeto
+        uses: actions/checkout@v4
+
+      - name: Compilar com o Tyra Engine
+        run: |
+          cd $GITHUB_WORKSPACE
+          make clean
+          make
+
+      - name: Salvar o arquivo pronto
+        uses: actions/upload-artifact@v4
+        with:
+          name: Panico_na_Floresta
+          path: |
+            *.elf
+            *.irx
+          retention-days: 30
 
