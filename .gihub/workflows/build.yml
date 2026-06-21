@@ -14,17 +14,17 @@ jobs:
       options: --user root
 
     steps:
-      - name: Baixar os arquivos do projeto
+      - name: Baixar arquivos do projeto
         uses: actions/checkout@v4
 
-      - name: Verificar arquivos e compilar
+      - name: Verificar e compilar
         run: |
           ls -la
           make --version
           make clean
           make
 
-      - name: Salvar o arquivo pronto
+      - name: Salvar arquivo pronto
         uses: actions/upload-artifact@v4
         with:
           name: Panico_na_Floresta
@@ -33,3 +33,4 @@ jobs:
             *.irx
             *.o
           retention-days: 30
+
