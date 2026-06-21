@@ -1,0 +1,32 @@
+name: Build PS2 Game
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: h4570/tyra:latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compilar o jogo
+        run: |
+          cd $GITHUB_WORKSPACE
+          make clean
+          make
+
+      - name: Salvar arquivo pronto
+        uses: actions/upload-artifact@v4
+        with:
+          name: ps2-game-build
+          path: |
+            *.elf
+            *.iso
+          retention-days: 30
