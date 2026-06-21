@@ -1,16 +1,30 @@
-# Nome do executável
-EE_BIN = panic_forest_ps2.elf
+# Nome do arquivo final
+TARGET = panic_forest.elf
 
-# Arquivos de objeto
-EE_OBJS = src/main.o src/panic_forest.o 
+# Arquivos de código
+OBJS = main.o panic_forest.o
 
-# Incluir o Makefile do Tyra Engine
-# (Assumindo que o projeto está dentro da pasta de exemplos do Tyra)
-include $(TYRA)/scripts/Makefile.common
-include $(TYRA)/scripts/Makefile.pref
+# Caminhos e ferramentas
+EE_CC = ee-gcc
+EE_CXX = ee-g++
+EE_LD = ee-g++
 
-# Regras de compilação
-all: $(EE_BIN)
+# Flags de compilação
+CFLAGS = -O2 -Wall -I$(PS2SDK)/ee/include -I.
+CXXFLAGS = $(CFLAGS)
+LDFLAGS = -L$(PS2SDK)/ee/lib -lpatches -lkernel -lc -lm
+
+# Regras
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(EE_LD) $(OBJS) -o $@ $(LDFLAGS)
+
+%.o: %.c
+	$(EE_CC) $(CFLAGS) -c $< -o $@
+
+%.o: %.cpp
+	$(EE_CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(EE_OBJS) $(EE_BIN)
+	rm -f *.o $(TARGET)
