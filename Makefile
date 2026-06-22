@@ -20,5 +20,3 @@ include /opt/tyra/scripts/Makefile.pref
 
 include /opt/tyra/scripts/Makefile.eeglobal
 
-
-
