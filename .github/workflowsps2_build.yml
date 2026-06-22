@@ -1,0 +1,82 @@
+name: PS2 Build Final
+
+
+
+on:
+
+  push:
+  
+    branches: [ main ]
+    
+  workflow_dispatch:
+  
+
+
+jobs:
+
+  build:
+  
+    runs-on: ubuntu-latest
+    
+    container:
+    
+      image: h4570/tyra:latest
+      
+
+
+    steps:
+    
+    - name: Checkout
+    
+      uses: actions/checkout@v4
+      
+
+
+    - name: Build
+    
+      run: |
+      
+        export TYRA=/opt/tyra
+        
+        cd $GITHUB_WORKSPACE
+        
+        make clean
+        
+        make
+        
+
+
+    - name: Upload
+    
+      uses: actions/upload-artifact@v4
+      
+      with:
+      
+        name: Panico_na_Floresta_ELF
+        
+        path: "*.elf"
+        
+        retention-days: 5
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
