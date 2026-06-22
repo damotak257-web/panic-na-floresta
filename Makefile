@@ -16,9 +16,9 @@ clean:
 
 
 
-include /opt/tyra/engine/scripts/Makefile.pref
+include /opt/tyra/scripts/Makefile.pref
 
-include /opt/tyra/engine/scripts/Makefile.eeglobal
+include /opt/tyra/scripts/Makefile.eeglobal
 
 
 
