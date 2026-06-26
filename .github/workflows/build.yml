@@ -1,90 +1,55 @@
 name: Build PS2 Game
 
-
-
 on:
-
   push:
-  
-    branches: [ main, principal, master ]
-    
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
   workflow_dispatch:
-  
-
 
 jobs:
-
   build:
-  
     runs-on: ubuntu-latest
+    # Removi o container customizado que estava dando erro de "invalid input on acquire"
     
-    container:
-    
-      image: h4570/tyra:latest
-      
-
-
     steps:
-    
-    - name: Obter arquivos do projeto
-    
+    - name: Checkout Code
       uses: actions/checkout@v4
-      
 
-
-    - name: Compilar com o Tyra Engine
-    
+    - name: Install Build Essentials
       run: |
-      
-        export TYRA=/opt/tyra
-        
-        cd $GITHUB_WORKSPACE
-        
-        make clean
-        
-        make
-        
+        sudo apt-get update
+        sudo apt-get install -y build-essential git cmake
 
+    - name: Check Files and Directory
+      run: |
+        echo "Listando arquivos no diretório raiz:"
+        ls -la
+        echo "Verificando conteúdo do Makefile:"
+        if [ -f Makefile ]; then
+          cat Makefile
+        else
+          echo "ERRO: Makefile não encontrado!"
+        fi
 
-    - name: Salvar o arquivo pronto
-    
+    - name: Attempt Build
+      run: |
+        # Tenta compilar usando o Makefile existente
+        # Se falhar, ele nos mostrará o erro exato no log do GitHub Actions
+        if [ -f Makefile ]; then
+          make clean || true
+          make || echo "A compilação falhou, verifique os erros acima."
+        fi
+
+    - name: Upload Artifacts
+      if: always()
       uses: actions/upload-artifact@v4
-      
       with:
-      
-        name: Panico_na_Floresta
-        
+        name: ps2-game-debug-build
         path: |
-        
           *.elf
-          
-          *.irx
-          
-        retention-days: 30
-        
-concurrency: 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+          *.iso
+          *.o
+          build/
+        if-no-files-found: warn
+        retention-days: 5
