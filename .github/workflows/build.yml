@@ -3,53 +3,31 @@ name: Build PS2 Game
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    # Removi o container customizado que estava dando erro de "invalid input on acquire"
-    
+    container:
+      # Esta imagem é mantida pela comunidade e tem o compilador PS2SDK pronto
+      image: ps2dev/ps2dev:latest
+
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Install Build Essentials
+    - name: Build Project
       run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential git cmake
-
-    - name: Check Files and Directory
-      run: |
-        echo "Listando arquivos no diretório raiz:"
-        ls -la
-        echo "Verificando conteúdo do Makefile:"
-        if [ -f Makefile ]; then
-          cat Makefile
-        else
-          echo "ERRO: Makefile não encontrado!"
-        fi
-
-    - name: Attempt Build
-      run: |
-        # Tenta compilar usando o Makefile existente
-        # Se falhar, ele nos mostrará o erro exato no log do GitHub Actions
-        if [ -f Makefile ]; then
-          make clean || true
-          make || echo "A compilação falhou, verifique os erros acima."
-        fi
+        # O PS2SDK já está configurado nesta imagem
+        make clean
+        make
 
     - name: Upload Artifacts
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: ps2-game-debug-build
+        name: Panico_na_Floresta_PS2
         path: |
           *.elf
           *.iso
-          *.o
           build/
-        if-no-files-found: warn
-        retention-days: 5
